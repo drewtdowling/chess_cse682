@@ -1,7 +1,6 @@
 package com.cse682.chess_cse682;
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -57,9 +56,8 @@ public class ChessClientApplication extends Application {
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
 
-        // Menu to capture
+        // TODO: Add a menu to support additional behaviors like saving/loading/new game, etc.
         BorderPane menu = new BorderPane();
-        menu.setPadding(new Insets(10, 10, 10, 0));
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
