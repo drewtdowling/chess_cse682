@@ -1,5 +1,6 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.piece.Piece;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 
@@ -9,7 +10,7 @@ import javafx.scene.control.Label;
 public class Square extends Label {
 
     // TODO: Implement a Piece class along with sub-classes for the various chess pieces.
-    // private Piece piece;
+    private Piece piece;
     private int row, column;
     private Board board;
 
@@ -31,6 +32,7 @@ public class Square extends Label {
      */
     Square(Board board, int row, int column) {
         this.setBoard(board);
+        this.setPiece(null);
         this.setRow(row);
         this.setColumn(column);
         this.setAlignment(Pos.CENTER);
@@ -53,6 +55,14 @@ public class Square extends Label {
      */
     public Board getBoard() {
         return this.board;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+
+    public Piece getPiece() {
+        return this.piece;
     }
 
     /**

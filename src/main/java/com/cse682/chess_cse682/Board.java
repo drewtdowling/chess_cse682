@@ -17,6 +17,8 @@ public class Board extends GridPane {
      */
     private final Square[] squares = new Square[DIMENSION * DIMENSION];
 
+    private int turn;
+
     /**
      * Default constructor for the Board class; initializes the squares
      * that compose the board along with their data.
@@ -27,6 +29,18 @@ public class Board extends GridPane {
             add(square, square.getRow(), square.getColumn());
             squares[i] = square;
         }
+    }
+
+    public Square getSquare(int col, int row) {
+        if (col < 0 || col > 7)
+            return null;
+        if (row < 0 || row > 7)
+            return null;
+        return squares[(row * 8) + col];
+    }
+
+    public int currentTurn() {
+        return this.turn;
     }
 
 }
