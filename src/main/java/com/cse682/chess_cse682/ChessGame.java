@@ -1,5 +1,6 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,12 +13,14 @@ import javafx.stage.Stage;
  * ChessClientApplication is a desktop Chess game application with
  * a GUI that allows users to play, load, and save chess games.
  */
-public class ChessClientApplication extends Application {
+public class ChessGame extends Application {
 
     /**
      * Store a reference to the currently active chess Board.
      */
     private Board gameboard;
+
+    private int turn;
 
     /**
      * Title of the application window.
@@ -51,10 +54,14 @@ public class ChessClientApplication extends Application {
 
         // Instantiate the chess Board instance and place it into the grid using
         // the required offsets to fit within the row/column labels.
-        this.setGameboard(new Board());
+        this.setGameboard(new Board(this));
         board.add(this.gameboard, 1, 1, 8, 8);
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
+
+        initializeGameboard();
+
+        this.setTurn(1);
 
         // TODO: Add a menu to support additional behaviors like saving/loading/new game, etc.
         BorderPane menu = new BorderPane();
@@ -87,6 +94,22 @@ public class ChessClientApplication extends Application {
     }
 
     /**
+     * Set the current turn of the Chess game.
+     * @param turn Current turn in the chess game.
+     */
+    public void setTurn(int turn) {
+        this.turn = turn;
+    }
+
+    /**
+     * Get the current turn of the chess game.
+     * @return Current turn of the chess game.
+     */
+    public int currentTurn() {
+        return this.turn;
+    }
+
+    /**
      * Utility method to generate a label for a row of the chess board.
      * @param rowNumber Row number [0,7] of the chess board to be labeled.
      * @return Label containing the correct annotation for the row of the chess board.
@@ -108,5 +131,64 @@ public class ChessClientApplication extends Application {
         columnLabel.setAlignment(Pos.CENTER);
         columnLabel.setMinSize(50, 20);
         return columnLabel;
+    }
+
+    /**
+     * Utility method to initialize the chess board with the pieces in their default positions.
+     *
+     * TODO: Once we implement the ability to save and load games, we could just load a file for the default instead.
+     */
+    private void initializeGameboard() {
+        Square square;
+
+        // Place the pawns.
+        for(int i = 0; i < 8; i++) {
+            square = this.gameboard.getSquare(i, 1);
+            square.setPiece(new Pawn(Color.BLACK, square));
+            square = this.gameboard.getSquare(i, 6);
+            square.setPiece(new Pawn(Color.WHITE, square));
+        }
+
+        // Place the rooks.
+        square = gameboard.getSquare(0, 0);
+        square.setPiece(new Rook(Color.BLACK, square));
+        square = gameboard.getSquare(7, 0);
+        square.setPiece(new Rook(Color.BLACK, square));
+        square = gameboard.getSquare(0, 7);
+        square.setPiece(new Rook(Color.WHITE, square));
+        square = gameboard.getSquare(7, 7);
+        square.setPiece(new Rook(Color.WHITE, square));
+
+        // Place the knights.
+        square = gameboard.getSquare(1, 0);
+        square.setPiece(new Knight(Color.BLACK, square));
+        square = gameboard.getSquare(6, 0);
+        square.setPiece(new Knight(Color.BLACK, square));
+        square = gameboard.getSquare(1, 7);
+        square.setPiece(new Knight(Color.WHITE, square));
+        square = gameboard.getSquare(6, 7);
+        square.setPiece(new Knight(Color.WHITE, square));
+
+        // Place the bishops.
+        square = gameboard.getSquare(2, 0);
+        square.setPiece(new Bishop(Color.BLACK, square));
+        square = gameboard.getSquare(5, 0);
+        square.setPiece(new Bishop(Color.BLACK, square));
+        square = gameboard.getSquare(2, 7);
+        square.setPiece(new Bishop(Color.WHITE, square));
+        square = gameboard.getSquare(5, 7);
+        square.setPiece(new Bishop(Color.WHITE, square));
+
+        // Place the queens.
+        square = gameboard.getSquare(3, 0);
+        square.setPiece(new Queen(Color.BLACK, square));
+        square = gameboard.getSquare(3, 7);
+        square.setPiece(new Queen(Color.WHITE, square));
+
+        // Place the kings.
+        square = gameboard.getSquare(4, 0);
+        square.setPiece(new King(Color.BLACK, square));
+        square = gameboard.getSquare(4, 7);
+        square.setPiece(new King(Color.WHITE, square));
     }
 }

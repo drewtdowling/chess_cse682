@@ -1,9 +1,14 @@
 package com.cse682.chess_cse682.piece;
 
+import com.cse682.chess_cse682.ChessGame;
 import com.cse682.chess_cse682.Color;
 import com.cse682.chess_cse682.Square;
+import javafx.scene.image.Image;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public abstract class Piece {
 
@@ -16,6 +21,8 @@ public abstract class Piece {
     protected int row;
     protected int col;
 
+    public static final Map<String, Image> pieceIconCache = new HashMap<>();
+
     Piece(Color color, String name, Square square) {
         this.setColor(color);
         this.setName(name);
@@ -25,12 +32,22 @@ public abstract class Piece {
         this.setFirstTurnMoved(-1);
         this.setMoved(false);
         StringBuilder sb = new StringBuilder();
-        sb.append("resources/images/")
-          .append(this.name)
+        sb.append(this.name)
           .append("-")
           .append(this.color.toString())
           .append(".png");
         this.setResourceFileName(sb.toString());
+        if (!pieceIconCache.containsKey(this.resourceFileName)) {
+            // This icon has not been loaded yet, so go ahead and do that now and cache it
+            // for future use.
+            Image icon = new Image(
+                    Objects.requireNonNull(ChessGame.class.getClassLoader().getResourceAsStream(resourceFileName)),
+                    50,
+                    50,
+                    true,
+                    true);
+            pieceIconCache.put(this.resourceFileName, icon);
+        }
     }
 
     private void setColor(Color color) {

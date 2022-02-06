@@ -13,7 +13,7 @@ public class ChessClientDriver {
      * @param args Command line arguments (none expected).
      */
     public static void main(String[] args) {
-        Application.launch(ChessClientApplication.class, args);
+        Application.launch(ChessGame.class, args);
     }
 
 }
