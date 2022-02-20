@@ -56,8 +56,9 @@ public class ChessClientApplication extends Application {
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
 
-        // TODO: Add a menu to support additional behaviors like saving/loading/new game, etc.
-        BorderPane menu = new BorderPane();
+        // Game Menu
+        GameMenu menu = new GameMenu();
+        pane.getChildren().addAll(menu.getMenuButtons());
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
