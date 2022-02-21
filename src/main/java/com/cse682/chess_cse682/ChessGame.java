@@ -1,6 +1,5 @@
 package com.cse682.chess_cse682;
 
-import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -58,6 +57,10 @@ public class ChessGame extends Application {
         board.add(this.gameboard, 1, 1, 8, 8);
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
+
+        // Game Menu
+        GameMenu menu = new GameMenu();
+        pane.getChildren().addAll(menu.getMenuButtons());
 
         initializeGameboard();
 
