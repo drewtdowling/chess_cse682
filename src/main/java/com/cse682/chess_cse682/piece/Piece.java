@@ -124,5 +124,28 @@ public abstract class Piece {
 
     public abstract List<Square> computeAvailableSquares();
 
+    public Piece move(Square square, boolean graphic) {
+        Piece killed = square.getPiece();
+        square.setPiece(this, graphic);
+        if (this.square != null) {
+            this.square.setPiece(null, graphic);
+        }
+        int preX = this.row;
+        int preY = this.col;
+        this.row = square.getRow();
+        this.col = square.getColumn();
+        this.setSquare(square);
 
+        Piece post = postMoveHandler(square.getBoard().getSquare(preX, preY), square, graphic);
+        if (graphic && !this.hasBeenMoved()) {
+            this.firstTurnMoved = square.getBoard().getGame().currentTurn();
+        }
+
+        return killed == null ? post : killed;
+    }
+
+    // Override this method to provide logic checking after each move.
+    public Piece postMoveHandler(Square oldSquare, Square newSquare, boolean graphic) {
+        return null;
+    }
 }

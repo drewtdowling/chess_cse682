@@ -70,6 +70,17 @@ public class Square extends Label {
             setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
     }
 
+    public void setPiece(Piece piece, boolean graphic) {
+        this.piece = piece;
+        if (graphic) {
+            if (piece == null) {
+                setGraphic(null);
+            } else {
+                setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
+            }
+        }
+    }
+
     public Piece getPiece() {
         return this.piece;
     }

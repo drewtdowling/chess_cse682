@@ -25,6 +25,74 @@ public class King extends Piece {
         List<Square> squares = new ArrayList<>();
 
         Set<Square> attackedSquares = square.getBoard().getAvailableSquares(color.opposite());
+        for (int xOffset = -1; xOffset <= 1; xOffset++) {
+            for (int yOffset = -1; yOffset <= 1; yOffset++) {
+                Square s;
+                if ((s = square.getBoard().getSquare(square.getColumn() + xOffset, square.getRow() + yOffset)) != null
+                    && s != square
+                    && !attackedSquares.contains(s)
+                    && (s.getPiece() == null || (s.getPiece() != null && s.getPiece().color != color))) {
+                    squares.add(s);
+                }
+            }
+        }
+
+        // Check if castling is possible.
+        if (!hasBeenMoved()) {
+            // Check for left castling.
+            Square rookSquare = this.square.getBoard().getSquare(0, this.row);
+            if (rookSquare.getPiece() instanceof Rook && !rookSquare.getPiece().hasBeenMoved()) {
+                boolean leftCastlingPossible = true;
+                for (int i = this.col - 1; i > 0; i--) {
+                    Square iter = this.square.getBoard().getSquare(i, this.row);
+                    if (iter.getPiece() != null || i > 1 && attackedSquares.contains(iter)) {
+                        leftCastlingPossible = false;
+                        break;
+                    }
+                }
+                if (leftCastlingPossible)
+                    squares.add(square.getBoard().getSquare(2, this.row));
+            }
+            // Check for right castling.
+            rookSquare = this.square.getBoard().getSquare(7, this.row);
+            if (rookSquare.getPiece() instanceof Rook && !rookSquare.getPiece().hasBeenMoved()) {
+                boolean rightCastlingPossible = true;
+                for (int i = this.col + 1; col < 7; i++) {
+                    Square iter = square.getBoard().getSquare(i, this.row);
+                    if (square.getPiece() != null || attackedSquares.contains(iter)) {
+                        rightCastlingPossible = false;
+                        break;
+                    }
+                }
+                if (rightCastlingPossible)
+                    squares.add(square.getBoard().getSquare(6, this.row));
+            }
+        }
+
         return squares;
+    }
+
+    public boolean inCheck() {
+        return square.getBoard().getAvailableSquares(color.opposite()).contains(square);
+    }
+
+    public boolean inCheckmate() {
+        if (inCheck()) {
+            for (Piece piece : square.getBoard().getPieces(this.color)) {
+                if (piece.computeAvailableSquares().size() > 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean inStalemate() {
+        if (!inCheck()) {
+            for (Piece piece : square.getBoard().getPieces(this.color)) {
+                if (piece.computeAvailableSquares().size() > 0)
+                    return false;
+            }
+        }
+        return true;
     }
 }

@@ -1,12 +1,10 @@
 package com.cse682.chess_cse682;
 
 import com.cse682.chess_cse682.piece.Pawn;
+import com.cse682.chess_cse682.piece.Piece;
 import javafx.scene.layout.GridPane;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class used to represent a chess board.
@@ -38,6 +36,7 @@ public class Board extends GridPane {
             add(square, square.getColumn(), square.getRow());
             squares[i] = square;
         }
+        resetAttackedSquares();
     }
 
     public Square getSquare(int col, int row) {
@@ -66,4 +65,11 @@ public class Board extends GridPane {
         return this.attackedSquares.get(color);
     }
 
+    public List<Piece> getPieces(Color color) {
+        List<Piece> pieces = new ArrayList<>();
+        Arrays.stream(squares)
+                .filter(s -> s.getPiece() != null && (color == null || s.getPiece().getColor() == color))
+                .forEach(s -> pieces.add(s.getPiece()));
+        return pieces;
+    }
 }

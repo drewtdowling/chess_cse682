@@ -1,10 +1,12 @@
 package com.cse682.chess_cse682.piece;
 
 import com.cse682.chess_cse682.Color;
+import com.cse682.chess_cse682.PromotionDialog;
 import com.cse682.chess_cse682.Square;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Pawn extends Piece {
 
@@ -98,5 +100,31 @@ public class Pawn extends Piece {
             }
         }
         return squares;
+    }
+
+    @Override
+    public Piece postMoveHandler(Square oldSquare, Square newSquare, boolean graphic) {
+        Piece pawn = null;
+        if (color == Color.BLACK && square.getRow() == 5
+                    && (pawn = square.getBoard().getSquare(this.col, 4).getPiece()) != null
+                    && pawn instanceof Pawn
+                    && square.getBoard().getGame().currentTurn() - pawn.getFirstTurnMoved() == 1) {
+            pawn.getSquare().setPiece(null, graphic);
+        }
+        if (color == Color.WHITE && square.getRow() == 2
+                    && (pawn = square.getBoard().getSquare(this.col, 3).getPiece()) != null
+                    && pawn instanceof Pawn
+                    && square.getBoard().getGame().currentTurn() - pawn.getFirstTurnMoved() == 1) {
+            pawn.getSquare().setPiece(null, graphic);
+        }
+
+        if (graphic) {
+            if (square.getRow() == 0 || square.getRow() == 7) {
+                Optional<Piece> result = new PromotionDialog(this).showAndWait();
+                result.ifPresent(f -> f.move(square, true));
+            }
+        }
+
+        return pawn;
     }
 }
