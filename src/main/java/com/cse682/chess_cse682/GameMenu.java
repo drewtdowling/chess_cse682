@@ -12,6 +12,7 @@ public class GameMenu extends BorderPane {
     private Button undo;
     private Button importGame;
     private Button exportGame;
+    private Button resign;
     private ButtonBar menuButtonBar;
 
     /**
@@ -33,6 +34,8 @@ public class GameMenu extends BorderPane {
         this.importGame.setPrefSize(60, 40);
         this.exportGame = new Button("Export");
         this.exportGame.setPrefSize(60, 40);
+        this.resign = new Button("Resign");
+        this.resign.setPrefSize(60, 40);
     }
 
     private void initBar() {
@@ -41,7 +44,8 @@ public class GameMenu extends BorderPane {
         ButtonBar.setButtonData(this.undo, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.importGame, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.exportGame, ButtonBar.ButtonData.APPLY);
-        this.menuButtonBar.getButtons().addAll(this.newGame, this.undo, this.importGame, this.exportGame);
+        ButtonBar.setButtonData(this.resign, ButtonBar.ButtonData.APPLY);
+        this.menuButtonBar.getButtons().addAll(this.newGame, this.undo, this.importGame, this.exportGame, this.resign);
         this.menuButtonBar.setLayoutX(220); //TODO - change these to be dynamic if we have time
         this.menuButtonBar.setLayoutY(25);
     }
@@ -74,6 +78,13 @@ public class GameMenu extends BorderPane {
             @Override
             public void handle(ActionEvent actionEvent) {
                 System.out.println("Export Button Pressed");
+            }
+        });
+
+        this.resign.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("Resign Button Pressed");
             }
         });
     }
