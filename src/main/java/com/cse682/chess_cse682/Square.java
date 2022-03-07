@@ -84,7 +84,9 @@ public class Square extends Label implements Serializable {
 
     public void setPiece(Piece piece) {
         this.piece = piece;
-        if(piece != null)
+        if(piece == null)
+            setGraphic(null);
+        else
             setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
     }
 

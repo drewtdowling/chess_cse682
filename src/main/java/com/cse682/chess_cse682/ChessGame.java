@@ -22,7 +22,7 @@ public class ChessGame extends Application implements Serializable {
      */
     private static Board gameboard;
 
-    private int turn;
+    private static int turn;
 
     /**
      * Title of the application window.
@@ -62,7 +62,7 @@ public class ChessGame extends Application implements Serializable {
         pane.setCenter(board);
 
         // Game Menu
-        GameMenu menu = new GameMenu();
+        GameMenu menu = new GameMenu(this);
         pane.getChildren().addAll(menu.getMenuButtons());
 
         initializeGameboard();
@@ -145,13 +145,21 @@ public class ChessGame extends Application implements Serializable {
      *
      * TODO: Once we implement the ability to save and load games, we could just load a file for the default instead.
      */
-    private void initializeGameboard() {
+    private static void initializeGameboard() {
         Square square;
 
         // Place the pawns.
         for(int i = 0; i < 8; i++) {
             square = gameboard.getSquare(i, 1);
             square.setPiece(new Pawn(Color.BLACK, square));
+            square = gameboard.getSquare(i, 2);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 3);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 4);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 5);
+            square.setPiece(null);
             square = gameboard.getSquare(i, 6);
             square.setPiece(new Pawn(Color.WHITE, square));
         }
@@ -198,4 +206,10 @@ public class ChessGame extends Application implements Serializable {
         square = gameboard.getSquare(4, 7);
         square.setPiece(new King(Color.WHITE, square));
     }
+
+    public static void resetGame() {
+        initializeGameboard();
+        turn = 1;
+    }
+
 }
