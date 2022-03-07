@@ -4,13 +4,14 @@ import com.cse682.chess_cse682.ChessGame;
 import com.cse682.chess_cse682.Color;
 import com.cse682.chess_cse682.Square;
 import javafx.scene.image.Image;
+import javafx.scene.input.DataFormat;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.Serializable;
+import java.util.*;
 
-public abstract class Piece {
+public abstract class Piece implements Serializable {
+
+    public transient static final DataFormat CHESS_PIECE = new DataFormat("chess.piece");
 
     protected Square square;
     protected Color color;
@@ -21,7 +22,7 @@ public abstract class Piece {
     protected int row;
     protected int col;
 
-    public static final Map<String, Image> pieceIconCache = new HashMap<>();
+    public transient static final Map<String, Image> pieceIconCache = new HashMap<>();
 
     Piece(Color color, String name, Square square) {
         this.setColor(color);
@@ -66,7 +67,7 @@ public abstract class Piece {
         return this.name;
     }
 
-    private void setSquare(Square square) {
+    public void setSquare(Square square) {
         if (square == null)
             throw new IllegalArgumentException("Cannot set null Square.");
         this.square = square;
@@ -86,6 +87,14 @@ public abstract class Piece {
 
     private void setMoved(boolean moved) {
         this.moved = moved;
+    }
+
+    public boolean canMove() {
+        return this.square.getBoard().getGame().nextToMove() == this.color;
+    }
+
+    public boolean canMoveTo(Square square) {
+        return canMove() && getAllAvailableSquares().contains(square);
     }
 
     public boolean hasBeenMoved() {
@@ -122,6 +131,35 @@ public abstract class Piece {
         return this.resourceFileName;
     }
 
+    public Image getImage() {
+        return pieceIconCache.get(this.resourceFileName);
+    }
+
+    public List<Square> getAllAvailableSquares() {
+        List<Square> squares = computeAvailableSquares();
+        King king = square.getBoard().getKing(this.color);
+        if (king != null) {
+            List<Square> trueSquares = new ArrayList<>();
+            Square oldSquare = square;
+            for (Square destinationSquare : squares) {
+                Piece killedPiece = move(destinationSquare, false);
+                square.getBoard().recalculateAttackedSquares();
+                boolean check = king.inCheck();
+                if (!check) {
+                    trueSquares.add(destinationSquare);
+                }
+                // revert the move to leave the board unmodified.
+                move(oldSquare, false);
+                if (killedPiece != null) {
+                    killedPiece.square.setPiece(killedPiece, false);
+                }
+                square.getBoard().recalculateAttackedSquares();
+            }
+            squares = trueSquares;
+        }
+        return squares;
+    }
+
     public abstract List<Square> computeAvailableSquares();
 
     public Piece move(Square square, boolean graphic) {
@@ -130,8 +168,9 @@ public abstract class Piece {
         if (this.square != null) {
             this.square.setPiece(null, graphic);
         }
-        int preX = this.row;
-        int preY = this.col;
+
+        int preX = this.col;
+        int preY = this.row;
         this.row = square.getRow();
         this.col = square.getColumn();
         this.setSquare(square);
@@ -139,6 +178,7 @@ public abstract class Piece {
         Piece post = postMoveHandler(square.getBoard().getSquare(preX, preY), square, graphic);
         if (graphic && !this.hasBeenMoved()) {
             this.firstTurnMoved = square.getBoard().getGame().currentTurn();
+            this.moved = true;
         }
 
         return killed == null ? post : killed;

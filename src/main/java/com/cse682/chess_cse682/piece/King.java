@@ -31,7 +31,7 @@ public class King extends Piece {
                 if ((s = square.getBoard().getSquare(square.getColumn() + xOffset, square.getRow() + yOffset)) != null
                     && s != square
                     && !attackedSquares.contains(s)
-                    && (s.getPiece() == null || (s.getPiece() != null && s.getPiece().color != color))) {
+                    && (s.getPiece() == null || (s.getPiece() != null && s.getPiece().getColor() != color))) {
                     squares.add(s);
                 }
             }
@@ -94,5 +94,17 @@ public class King extends Piece {
             }
         }
         return true;
+    }
+
+    public Piece postMoveHandler(Square oldSquare, Square newSquare, boolean graphic) {
+        if (graphic && !hasBeenMoved()) {
+            if (this.col == 2) {
+                square.getBoard().getSquare(0, this.row).getPiece().move(square.getBoard().getSquare(3, this.row), true);
+            }
+            else if (this.col == 6) {
+                square.getBoard().getSquare(7, this.row).getPiece().move(square.getBoard().getSquare(5, this.row), true);
+            }
+        }
+        return null;
     }
 }

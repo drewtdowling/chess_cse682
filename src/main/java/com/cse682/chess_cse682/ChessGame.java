@@ -9,16 +9,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.io.Serializable;
+
 /**
  * ChessClientApplication is a desktop Chess game application with
  * a GUI that allows users to play, load, and save chess games.
  */
-public class ChessGame extends Application {
+public class ChessGame extends Application implements Serializable {
 
     /**
      * Store a reference to the currently active chess Board.
      */
-    private Board gameboard;
+    private static Board gameboard;
 
     private int turn;
 
@@ -55,7 +57,7 @@ public class ChessGame extends Application {
         // Instantiate the chess Board instance and place it into the grid using
         // the required offsets to fit within the row/column labels.
         this.setGameboard(new Board(this));
-        board.add(this.gameboard, 1, 1, 8, 8);
+        board.add(gameboard, 1, 1, 8, 8);
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
 
@@ -80,8 +82,8 @@ public class ChessGame extends Application {
      * Get the currently active chess board.
      * @return Current chess board instance shown in the window.
      */
-    public Board getGameboard() {
-        return this.gameboard;
+    public static Board getGameboard() {
+        return gameboard;
     }
 
     /**
@@ -91,7 +93,7 @@ public class ChessGame extends Application {
     public void setGameboard(Board gameboard) {
         if(gameboard == null)
             throw new NullPointerException("Cannot set a null gameboard in the ChessClientApplication.");
-        this.gameboard = gameboard;
+        ChessGame.gameboard = gameboard;
     }
 
     /**
@@ -108,6 +110,10 @@ public class ChessGame extends Application {
      */
     public int currentTurn() {
         return this.turn;
+    }
+
+    public Color nextToMove() {
+        return this.turn % 2 == 0 ? Color.BLACK : Color.WHITE;
     }
 
     /**
@@ -144,9 +150,9 @@ public class ChessGame extends Application {
 
         // Place the pawns.
         for(int i = 0; i < 8; i++) {
-            square = this.gameboard.getSquare(i, 1);
+            square = gameboard.getSquare(i, 1);
             square.setPiece(new Pawn(Color.BLACK, square));
-            square = this.gameboard.getSquare(i, 6);
+            square = gameboard.getSquare(i, 6);
             square.setPiece(new Pawn(Color.WHITE, square));
         }
 

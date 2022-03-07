@@ -1,15 +1,17 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.piece.King;
 import com.cse682.chess_cse682.piece.Pawn;
 import com.cse682.chess_cse682.piece.Piece;
 import javafx.scene.layout.GridPane;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Class used to represent a chess board.
  */
-public class Board extends GridPane {
+public class Board extends GridPane implements Serializable {
 
     /**
      * Dimension of a chess board.
@@ -47,6 +49,15 @@ public class Board extends GridPane {
         return squares[(row * 8) + col];
     }
 
+    public King getKing(Color color) {
+        for (Square square : squares) {
+            if (square.getPiece() instanceof King && square.getPiece().getColor() == color) {
+                return (King) square.getPiece();
+            }
+        }
+        return null;
+    }
+
     private void setGame(ChessGame game) {
         if (game != null)
             this.game = game;
@@ -71,5 +82,13 @@ public class Board extends GridPane {
                 .filter(s -> s.getPiece() != null && (color == null || s.getPiece().getColor() == color))
                 .forEach(s -> pieces.add(s.getPiece()));
         return pieces;
+    }
+
+    public void recalculateAttackedSquares() {
+        resetAttackedSquares();
+        Arrays.stream(squares).filter(s -> s.getPiece() != null && s.getPiece().getColor() == Color.WHITE)
+                              .forEach(s -> attackedSquares.get(Color.WHITE).addAll(s.getPiece().computeAvailableSquares()));
+        Arrays.stream(squares).filter(s -> s.getPiece() != null && s.getPiece().getColor() == Color.BLACK)
+                .forEach(s -> attackedSquares.get(Color.BLACK).addAll(s.getPiece().computeAvailableSquares()));
     }
 }
