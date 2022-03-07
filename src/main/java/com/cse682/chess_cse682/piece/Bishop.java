@@ -12,7 +12,6 @@ public class Bishop extends Piece {
         super(color, "bishop", square);
     }
 
-
     @Override
     public List<Square> computeAvailableSquares() {
         List<Square> squares = new ArrayList<>();

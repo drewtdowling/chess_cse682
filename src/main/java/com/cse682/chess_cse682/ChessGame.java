@@ -1,5 +1,6 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -24,7 +25,7 @@ public class ChessGame extends Application {
     /**
      * Title of the application window.
      */
-    private static final String TITLE = "CSE 682 Chess Application";
+    private static final String TITLE = "Chess GUI Application";
 
     /**
      * Entry point for the ChessClientApplication.  Initializes the stage
@@ -65,9 +66,6 @@ public class ChessGame extends Application {
         initializeGameboard();
 
         this.setTurn(1);
-
-        // TODO: Add a menu to support additional behaviors like saving/loading/new game, etc.
-        BorderPane menu = new BorderPane();
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
