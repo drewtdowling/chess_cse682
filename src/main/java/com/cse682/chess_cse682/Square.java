@@ -1,7 +1,11 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.piece.Piece;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+
+import java.util.List;
 
 /**
  * Represents one square on a chess board.
@@ -9,7 +13,7 @@ import javafx.scene.control.Label;
 public class Square extends Label {
 
     // TODO: Implement a Piece class along with sub-classes for the various chess pieces.
-    // private Piece piece;
+    private Piece piece;
     private int row, column;
     private Board board;
 
@@ -23,6 +27,8 @@ public class Square extends Label {
      */
     private static final String defaultWhiteStyle = "-fx-background-color: lightgray";
 
+    private static final String highlightedStyle = "-fx-background-color: cyan";
+
     /**
      * Parameterized constructor for the {@link Square} class.
      * @param board {@link Board} that will contain this square.
@@ -31,12 +37,15 @@ public class Square extends Label {
      */
     Square(Board board, int row, int column) {
         this.setBoard(board);
+        this.setPiece(null);
         this.setRow(row);
         this.setColumn(column);
         this.setAlignment(Pos.CENTER);
         this.initializeBackgroundColor();
         setMinSize(50, 50);
         setMaxSize(50, 50);
+        setOnMouseEntered(e -> onMouseEntered());
+        setOnMouseExited(e -> onMouseExited());
     }
 
     /**
@@ -53,6 +62,16 @@ public class Square extends Label {
      */
     public Board getBoard() {
         return this.board;
+    }
+
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+        if(piece != null)
+            setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
+    }
+
+    public Piece getPiece() {
+        return this.piece;
     }
 
     /**
@@ -116,5 +135,27 @@ public class Square extends Label {
             default -> throw new RuntimeException("Invalid color encountered.");
         };
         this.setStyle(style);
+    }
+
+    private void setHighlightedStyle() {
+        this.setStyle(highlightedStyle);
+    }
+
+    private void onMouseEntered() {
+        List<Square> availableSquares;
+        if (this.piece != null && (availableSquares = piece.computeAvailableSquares()).size() > 0) {
+            for (Square square : availableSquares) {
+                square.setHighlightedStyle();
+            }
+        }
+    }
+
+    private void onMouseExited() {
+        List<Square> availableSquares;
+        if (this.piece != null && (availableSquares = piece.computeAvailableSquares()).size() > 0) {
+            for (Square square : availableSquares) {
+                square.initializeBackgroundColor();
+            }
+        }
     }
 }
