@@ -1,13 +1,19 @@
 package com.cse682.chess_cse682;
 
+import com.cse682.chess_cse682.db.DataAccessException;
+import com.cse682.chess_cse682.db.GenerateDB;
 import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+
+import java.util.Objects;
 
 /**
  * ChessClientApplication is a desktop Chess game application with
@@ -33,7 +39,22 @@ public class ChessGame extends Application {
      * @param stage Stage referencing the application window.
      */
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception {
+        // Init DB
+        try {
+            this.initDB();
+        }
+        catch (DataAccessException e) {
+            System.err.println("Something went wrong initializing the database");
+        }
+
+        // Login page
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/loginForm.fxml")));
+        Scene login = new Scene(root);
+        Stage loginStg = new Stage();
+        loginStg.setScene(login);
+
+
         // Set the title into the application window.
         stage.setTitle(TITLE);
 
@@ -74,6 +95,9 @@ public class ChessGame extends Application {
         stage.setMinHeight(stage.getHeight());
         stage.setScene(scene);
         stage.show();
+
+        // Show the login stage
+        loginStg.show();
     }
 
     /**
@@ -191,5 +215,23 @@ public class ChessGame extends Application {
         square.setPiece(new King(Color.BLACK, square));
         square = gameboard.getSquare(4, 7);
         square.setPiece(new King(Color.WHITE, square));
+    }
+
+    /**
+     * This function init the database
+     * */
+    private void initDB() throws DataAccessException {
+        GenerateDB gdb = new GenerateDB();
+        gdb.generateUserTable();
+        gdb.generateStatsTable();
+    }
+
+    /**
+     * DEBUG - this function clears the tables
+     * */
+    private void clearDB() throws DataAccessException {
+        GenerateDB gdb = new GenerateDB();
+        gdb.clearUserTable();
+        gdb.clearStatsTable();
     }
 }
