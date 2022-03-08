@@ -48,12 +48,13 @@ public class ChessGame extends Application {
             System.err.println("Something went wrong initializing the database");
         }
 
+        // Show the login stage
         // Login page
+        Stage loginStg = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/loginForm.fxml")));
         Scene login = new Scene(root);
-        Stage loginStg = new Stage();
         loginStg.setScene(login);
-
+        loginStg.showAndWait();
 
         // Set the title into the application window.
         stage.setTitle(TITLE);
@@ -96,8 +97,6 @@ public class ChessGame extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // Show the login stage
-        loginStg.show();
     }
 
     /**

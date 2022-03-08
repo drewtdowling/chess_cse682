@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
+import javafx.stage.Stage;
 
 import java.sql.SQLException;
 
@@ -49,6 +50,8 @@ public class LoginController {
         }
         else {
             infoBox("Login Successful", null, "Success");
+            Stage stage = (Stage)submitButton.getScene().getWindow();
+            stage.close();
         }
 
 
