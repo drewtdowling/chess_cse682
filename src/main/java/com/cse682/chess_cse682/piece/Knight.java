@@ -13,7 +13,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public List<Square> computeAvailableSquares() {
+    public List<Square> computeAvailableSquares(boolean includeNonAttackedSquares) {
         List<Square> squares = new ArrayList<>();
         addSquare(col + 2, row + 1, squares);
         addSquare(col + 2, row - 1, squares);

@@ -15,19 +15,21 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Square> computeAvailableSquares() {
+    public List<Square> computeAvailableSquares(boolean includeNonAttackedSquares) {
         List<Square> squares = new ArrayList<>();
         Square square;
         // Check for legal moves for a white pawn.
         if (this.color == Color.WHITE) {
 
-            // Check if the square directly in front of the pawn is available.
-            if ((square = this.square.getBoard().getSquare(col, row - 1)) != null && square.getPiece() == null) {
-                squares.add(square);
-                // If the pawn is in the starting row, check to see if the space
-                // two spaces ahead is open.
-                if (row == 6 && (square = this.square.getBoard().getSquare(col, row - 2)).getPiece() == null) {
+            if (includeNonAttackedSquares) {
+                // Check if the square directly in front of the pawn is available.
+                if ((square = this.square.getBoard().getSquare(col, row - 1)) != null && square.getPiece() == null) {
                     squares.add(square);
+                    // If the pawn is in the starting row, check to see if the space
+                    // two spaces ahead is open.
+                    if (row == 6 && (square = this.square.getBoard().getSquare(col, row - 2)).getPiece() == null) {
+                        squares.add(square);
+                    }
                 }
             }
 
@@ -63,22 +65,25 @@ public class Pawn extends Piece {
         }
         // check for legal moves for a black pawn.
         else {
-            // Check to see if the square in front of the black pawn is open.
-            if ((square = this.square.getBoard().getSquare(col, row + 1)) != null && square.getPiece() == null) {
-                squares.add(square);
-                if (row == 1 && (square = this.square.getBoard().getSquare(col, row + 2)).getPiece() == null) {
+
+            if (includeNonAttackedSquares) {
+                // Check to see if the square in front of the black pawn is open.
+                if ((square = this.square.getBoard().getSquare(col, row + 1)) != null && square.getPiece() == null) {
                     squares.add(square);
+                    if (row == 1 && (square = this.square.getBoard().getSquare(col, row + 2)).getPiece() == null) {
+                        squares.add(square);
+                    }
                 }
             }
 
             // Check potential captures.
             // Check to see if the piece is at the edge of the board, if the space is occupied, and if the space is
             // occupied by an opponents piece.
-            if (col - 1 >= 0 && (square = this.square.getBoard().getSquare(col - 1, row + 1)).getPiece() != null
+            if (col - 1 >= 0 && (square = this.square.getBoard().getSquare(col - 1, row + 1)) != null && square.getPiece() != null
                              && square.getPiece().color != color) {
                 squares.add(square);
             }
-            if (col + 1 < 8 && (square = this.square.getBoard().getSquare(col + 1, row + 1)).getPiece() != null
+            if (col + 1 < 8 && (square = this.square.getBoard().getSquare(col + 1, row + 1)) != null && square.getPiece() != null
                             && square.getPiece().color != color) {
                 squares.add(square);
             }

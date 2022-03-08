@@ -21,7 +21,7 @@ public class King extends Piece {
      * @return List of available squares where the king can move.
      */
     @Override
-    public List<Square> computeAvailableSquares() {
+    public List<Square> computeAvailableSquares(boolean includeNonAttackedSquares) {
         List<Square> squares = new ArrayList<>();
 
         Set<Square> attackedSquares = square.getBoard().getAvailableSquares(color.opposite());
@@ -57,9 +57,9 @@ public class King extends Piece {
             rookSquare = this.square.getBoard().getSquare(7, this.row);
             if (rookSquare.getPiece() instanceof Rook && !rookSquare.getPiece().hasBeenMoved()) {
                 boolean rightCastlingPossible = true;
-                for (int i = this.col + 1; col < 7; i++) {
+                for (int i = this.col + 1; i < 7; i++) {
                     Square iter = square.getBoard().getSquare(i, this.row);
-                    if (square.getPiece() != null || attackedSquares.contains(iter)) {
+                    if (iter.getPiece() != null || attackedSquares.contains(iter)) {
                         rightCastlingPossible = false;
                         break;
                     }
@@ -79,7 +79,7 @@ public class King extends Piece {
     public boolean inCheckmate() {
         if (inCheck()) {
             for (Piece piece : square.getBoard().getPieces(this.color)) {
-                if (piece.computeAvailableSquares().size() > 0)
+                if (piece.getAllAvailableSquares().size() > 0)
                     return false;
             }
         }
@@ -89,7 +89,7 @@ public class King extends Piece {
     public boolean inStalemate() {
         if (!inCheck()) {
             for (Piece piece : square.getBoard().getPieces(this.color)) {
-                if (piece.computeAvailableSquares().size() > 0)
+                if (piece.computeAvailableSquares(true).size() > 0)
                     return false;
             }
         }

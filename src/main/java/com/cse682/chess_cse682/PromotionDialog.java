@@ -28,8 +28,8 @@ public class PromotionDialog extends Dialog<Piece> {
         Piece piece;
 
         PromotionCandidateLabel(Piece figure) {
-            setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
             this.piece = figure;
+            setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
             setOnMouseReleased(this::onMouseReleased);
         }
 

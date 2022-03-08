@@ -2,6 +2,7 @@ package com.cse682.chess_cse682;
 
 import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -21,6 +22,8 @@ public class ChessGame extends Application implements Serializable {
      * Store a reference to the currently active chess Board.
      */
     private static Board gameboard;
+
+    private transient Label gameStatus;
 
     private static int turn;
 
@@ -65,13 +68,18 @@ public class ChessGame extends Application implements Serializable {
         GameMenu menu = new GameMenu(this);
         pane.getChildren().addAll(menu.getMenuButtons());
 
+        gameStatus = new Label();
+        gameStatus.setAlignment(Pos.BOTTOM_CENTER);
+        gameStatus.setPadding(new Insets(10, 0, 10, 10));
+        pane.setBottom(gameStatus);
+
         initializeGameboard();
 
         this.setTurn(1);
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
-        Scene scene = new Scene(pane, 470, 520);
+        Scene scene = new Scene(pane, 470, 550);
         stage.setMinWidth(stage.getWidth());
         stage.setMinHeight(stage.getHeight());
         stage.setScene(scene);
@@ -102,6 +110,35 @@ public class ChessGame extends Application implements Serializable {
      */
     public void setTurn(int turn) {
         this.turn = turn;
+    }
+
+    public void advanceTurn() {
+        turn++;
+        gameboard.recalculateAttackedSquares();
+        checkGameState();
+    }
+
+    private void displayGameState(String gameStateText) {
+        this.gameStatus.setText(gameStateText);
+    }
+
+    public void checkGameState() {
+        King king = gameboard.getKing(nextToMove());
+        if (king != null) {
+            if (king.inCheck()) {
+                if (king.inCheckmate()) {
+                    this.displayGameState("Checkmate!  " + king.getColor().opposite().prettyName() + " wins!");
+                    return;
+                } else {
+                    this.displayGameState("Check! " + king.getColor().prettyName() + " to defend.");
+                    return;
+                }
+            } else if (king.inStalemate()) {
+                this.displayGameState("Stalemate! " + king.getColor().prettyName() + " can't move.");
+                return;
+            }
+        }
+        this.displayGameState("");
     }
 
     /**

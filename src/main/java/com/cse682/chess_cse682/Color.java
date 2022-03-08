@@ -27,4 +27,11 @@ public enum Color {
     public String toString() {
         return this.name;
     }
+
+    public String prettyName() {
+        return switch (this) {
+            case BLACK -> "Black";
+            case WHITE -> "White";
+        };
+    }
 }

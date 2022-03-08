@@ -11,7 +11,7 @@ import java.util.*;
 /**
  * Class used to represent a chess board.
  */
-public class Board extends GridPane implements Serializable {
+public class Board extends GridPane {
 
     /**
      * Dimension of a chess board.
@@ -87,8 +87,8 @@ public class Board extends GridPane implements Serializable {
     public void recalculateAttackedSquares() {
         resetAttackedSquares();
         Arrays.stream(squares).filter(s -> s.getPiece() != null && s.getPiece().getColor() == Color.WHITE)
-                              .forEach(s -> attackedSquares.get(Color.WHITE).addAll(s.getPiece().computeAvailableSquares()));
+                              .forEach(s -> attackedSquares.get(Color.WHITE).addAll(s.getPiece().computeAvailableSquares(false)));
         Arrays.stream(squares).filter(s -> s.getPiece() != null && s.getPiece().getColor() == Color.BLACK)
-                .forEach(s -> attackedSquares.get(Color.BLACK).addAll(s.getPiece().computeAvailableSquares()));
+                .forEach(s -> attackedSquares.get(Color.BLACK).addAll(s.getPiece().computeAvailableSquares(false)));
     }
 }

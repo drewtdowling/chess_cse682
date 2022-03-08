@@ -13,7 +13,7 @@ public abstract class Piece implements Serializable {
 
     public transient static final DataFormat CHESS_PIECE = new DataFormat("chess.piece");
 
-    protected Square square;
+    protected transient Square square;
     protected Color color;
     private String name;
     private String resourceFileName;
@@ -28,8 +28,10 @@ public abstract class Piece implements Serializable {
         this.setColor(color);
         this.setName(name);
         this.setSquare(square);
-        this.setRow(square.getRow());
-        this.setColumn(square.getColumn());
+        if (this.square != null) {
+            this.setRow(square.getRow());
+            this.setColumn(square.getColumn());
+        }
         this.setFirstTurnMoved(-1);
         this.setMoved(false);
         StringBuilder sb = new StringBuilder();
@@ -68,8 +70,8 @@ public abstract class Piece implements Serializable {
     }
 
     public void setSquare(Square square) {
-        if (square == null)
-            throw new IllegalArgumentException("Cannot set null Square.");
+        //if (square == null)
+        //    throw new IllegalArgumentException("Cannot set null Square.");
         this.square = square;
     }
 
@@ -136,7 +138,7 @@ public abstract class Piece implements Serializable {
     }
 
     public List<Square> getAllAvailableSquares() {
-        List<Square> squares = computeAvailableSquares();
+        List<Square> squares = computeAvailableSquares(true);
         King king = square.getBoard().getKing(this.color);
         if (king != null) {
             List<Square> trueSquares = new ArrayList<>();
@@ -160,7 +162,7 @@ public abstract class Piece implements Serializable {
         return squares;
     }
 
-    public abstract List<Square> computeAvailableSquares();
+    public abstract List<Square> computeAvailableSquares(boolean includeNonAttackedSquares);
 
     public Piece move(Square square, boolean graphic) {
         Piece killed = square.getPiece();

@@ -14,7 +14,7 @@ public class Queen extends Piece {
 
 
     @Override
-    public List<Square> computeAvailableSquares() {
+    public List<Square> computeAvailableSquares(boolean includeNonAttackedSquares) {
         List<Square> fields = new ArrayList<>();
         for (int i = 1; col + i < 8 && row + i < 8; i++)
             if (addSquare(col + i, row + i, fields))

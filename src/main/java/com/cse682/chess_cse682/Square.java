@@ -7,13 +7,12 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Represents one square on a chess board.
  */
-public class Square extends Label implements Serializable {
+public class Square extends Label {
 
     // TODO: Implement a Piece class along with sub-classes for the various chess pieces.
     private Piece piece;
@@ -174,7 +173,7 @@ public class Square extends Label implements Serializable {
 
     private void onMouseEntered() {
         List<Square> availableSquares;
-        if (this.piece != null && (availableSquares = piece.computeAvailableSquares()).size() > 0) {
+        if (this.piece != null && (availableSquares = piece.computeAvailableSquares(true)).size() > 0) {
             for (Square square : availableSquares) {
                 square.setHighlightedStyle();
             }
@@ -183,7 +182,7 @@ public class Square extends Label implements Serializable {
 
     private void onMouseExited() {
         List<Square> availableSquares;
-        if (this.piece != null && (availableSquares = piece.computeAvailableSquares()).size() > 0) {
+        if (this.piece != null && (availableSquares = piece.computeAvailableSquares(true)).size() > 0) {
             for (Square square : availableSquares) {
                 square.initializeBackgroundColor();
             }
@@ -215,7 +214,7 @@ public class Square extends Label implements Serializable {
                 if (square.getPiece() != null || square.isEnPassantField(piece)) {
                     square.setHighlightedStyle();
                 } else {
-                    square.setHighlightedStyle();
+                    square.initializeBackgroundColor();
                 }
             }
             e.consume();
@@ -233,7 +232,7 @@ public class Square extends Label implements Serializable {
         Dragboard dragboard = e.getDragboard();
         if (dragboard.hasContent(Piece.CHESS_PIECE)) {
             Piece piece = deserializePiece(dragboard);
-            piece.computeAvailableSquares().forEach(Square::initializeBackgroundColor);
+            piece.computeAvailableSquares(true).forEach(Square::initializeBackgroundColor);
         }
         e.consume();
     }
@@ -245,9 +244,9 @@ public class Square extends Label implements Serializable {
             movingPiece = board.getSquare(movingPiece.getColumn(), movingPiece.getRow()).getPiece();
             if (movingPiece.canMoveTo(this)) {
                 initializeBackgroundColor();
-                movingPiece.computeAvailableSquares().forEach(Square::initializeBackgroundColor);
+                movingPiece.computeAvailableSquares(true).forEach(Square::initializeBackgroundColor);
                 movingPiece.move(this, true);
-                getBoard().getGame().setTurn(getBoard().getGame().currentTurn() + 1);
+                getBoard().getGame().advanceTurn();
             }
         }
         e.consume();
