@@ -8,10 +8,21 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
+/**
+ * Dialog for handling the promotion of pawns that reach the end
+ * of the board.
+ */
 public class PromotionDialog extends Dialog<Piece> {
 
+    /**
+     * Pawn being promoted.
+     */
     private Piece selectedPiece;
 
+    /**
+     * Parameterized constructor for the PromotionDialog class.
+     * @param pawn Pawn to be promoted.
+     */
     public PromotionDialog(Pawn pawn) {
         setTitle("Promote pawn " + pawn.getColor().prettyName());
         setResultConverter(f -> selectedPiece);
@@ -23,16 +34,32 @@ public class PromotionDialog extends Dialog<Piece> {
         getDialogPane().setContent(hbox);
     }
 
+    /**
+     * Inner class used to render the promotion piece candidates in the dialog window.
+     */
     private class PromotionCandidateLabel extends Label {
+
+        /**
+         * Promotion candidate piece type.
+         */
         Piece piece;
 
+        /**
+         * Parameterized constructor for the PromotionCandidateLabel class.
+         * @param figure Piece representing the promoted piece selection candidate.
+         */
         PromotionCandidateLabel(Piece figure) {
             this.piece = figure;
             setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
             setOnMouseReleased(this::onMouseReleased);
         }
 
+        /**
+         * Handler method for when the player selects the piece to promote to.
+         * @param e MouseEvent instance.
+         */
         private void onMouseReleased(MouseEvent e) {
+            // Set the selected piece to be placed into the board.
             selectedPiece = piece;
             getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             close();

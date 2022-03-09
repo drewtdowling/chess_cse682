@@ -257,6 +257,4 @@ public class Square extends Label {
         source.setSquare(ChessGame.getGameboard().getSquare(source.getColumn(), source.getRow()));
         return source;
     }
-
-
 }

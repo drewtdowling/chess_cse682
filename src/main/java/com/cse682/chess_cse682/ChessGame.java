@@ -23,10 +23,19 @@ public class ChessGame extends Application implements Serializable {
      */
     private static Board gameboard;
 
+    /**
+     * Game status label to show within the window.
+     */
     private transient Label gameStatus;
 
+    /**
+     * Current turn in the chess game.
+     */
     private static int turn;
 
+    /**
+     * Singleton instance used to track the current game.
+     */
     private static ChessGame game;
 
     /**
@@ -119,16 +128,26 @@ public class ChessGame extends Application implements Serializable {
         this.turn = turn;
     }
 
+    /**
+     * Utility method to advance the turn of the game after a move.
+     */
     public void advanceTurn() {
         turn++;
         gameboard.recalculateAttackedSquares();
         checkGameState();
     }
 
+    /**
+     * Utility method to update the text in the game status label shown in the GUI.
+     * @param gameStateText
+     */
     private void displayGameState(String gameStateText) {
         this.gameStatus.setText(gameStateText);
     }
 
+    /**
+     * Check the state of the chess game for checks, checkmates, and stalemates.
+     */
     public void checkGameState() {
         King king = gameboard.getKing(nextToMove());
         if (king != null) {
@@ -156,6 +175,10 @@ public class ChessGame extends Application implements Serializable {
         return this.turn;
     }
 
+    /**
+     * Utility method to determine the color of the player next to move.
+     * @return
+     */
     public Color nextToMove() {
         return this.turn % 2 == 0 ? Color.BLACK : Color.WHITE;
     }
@@ -253,10 +276,13 @@ public class ChessGame extends Application implements Serializable {
         game.checkGameState();
     }
 
+    /**
+     * Utility method to reset the game board, reset the turn, and reset
+     * the game status label.
+     */
     public static void resetGame() {
         initializeGameboard();
         turn = 1;
         game.checkGameState();
     }
-
 }
