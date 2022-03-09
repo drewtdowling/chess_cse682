@@ -27,6 +27,8 @@ public class ChessGame extends Application implements Serializable {
 
     private static int turn;
 
+    private static ChessGame game;
+
     /**
      * Title of the application window.
      */
@@ -41,6 +43,9 @@ public class ChessGame extends Application implements Serializable {
     public void start(Stage stage) {
         // Set the title into the application window.
         stage.setTitle(TITLE);
+
+        // Set the singleton.
+        game = this;
 
         // Initialize the pane used to frame all application contents.
         BorderPane pane = new BorderPane();
@@ -76,6 +81,8 @@ public class ChessGame extends Application implements Serializable {
         initializeGameboard();
 
         this.setTurn(1);
+
+        game.checkGameState();
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
@@ -138,7 +145,7 @@ public class ChessGame extends Application implements Serializable {
                 return;
             }
         }
-        this.displayGameState("");
+        this.displayGameState(nextToMove().prettyName() + " to move!");
     }
 
     /**
@@ -242,11 +249,14 @@ public class ChessGame extends Application implements Serializable {
         square.setPiece(new King(Color.BLACK, square));
         square = gameboard.getSquare(4, 7);
         square.setPiece(new King(Color.WHITE, square));
+
+        game.checkGameState();
     }
 
     public static void resetGame() {
         initializeGameboard();
         turn = 1;
+        game.checkGameState();
     }
 
 }

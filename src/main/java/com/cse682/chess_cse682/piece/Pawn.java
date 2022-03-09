@@ -8,12 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class represents a pawn piece in a game of chess.
+ */
 public class Pawn extends Piece {
 
+    /**
+     * Parameterized constructor for the Pawn class.
+     * @param color Color of the pawn.
+     * @param square Square on which the pawn is placed.
+     */
     public Pawn(Color color, Square square) {
         super(color, "pawn", square);
     }
 
+    /**
+     * Compute the collection of squares where a pawn can successfully move.
+     * @param includeNonAttackedSquares Boolean flag indicating if the spaces directly in front of the pawn should be
+     *                                  included.
+     * @return Collection of squares where the pawn can successfully move.
+     */
     @Override
     public List<Square> computeAvailableSquares(boolean includeNonAttackedSquares) {
         List<Square> squares = new ArrayList<>();
@@ -21,6 +35,7 @@ public class Pawn extends Piece {
         // Check for legal moves for a white pawn.
         if (this.color == Color.WHITE) {
 
+            // Check for squares located directly in front of the pawn.
             if (includeNonAttackedSquares) {
                 // Check if the square directly in front of the pawn is available.
                 if ((square = this.square.getBoard().getSquare(col, row - 1)) != null && square.getPiece() == null) {
@@ -66,6 +81,7 @@ public class Pawn extends Piece {
         // check for legal moves for a black pawn.
         else {
 
+            // Check for squares located directly in front of the pawn.
             if (includeNonAttackedSquares) {
                 // Check to see if the square in front of the black pawn is open.
                 if ((square = this.square.getBoard().getSquare(col, row + 1)) != null && square.getPiece() == null) {
@@ -107,9 +123,19 @@ public class Pawn extends Piece {
         return squares;
     }
 
+    /**
+     * Handler method executed after pawns are successfully moved to perform follow-on actions.  In the case of the
+     * pawn, this means either capturing an opponent's pawn taken en-passant or initiating the pawn promotion dialog.
+     * @param oldSquare Square from which the pawn moved.
+     * @param newSquare Square to which the pawn moved.
+     * @param graphic Boolean flag indicating if the change should be reflected visually in the GUI.
+     * @return Piece the captured the opponents pawn en-passant, or null.
+     */
     @Override
     public Piece postMoveHandler(Square oldSquare, Square newSquare, boolean graphic) {
         Piece pawn = null;
+
+        // Check if a piece was captured en-passant and if so, remove the killed pawn.
         if (color == Color.BLACK && square.getRow() == 5
                     && (pawn = square.getBoard().getSquare(this.col, 4).getPiece()) != null
                     && pawn instanceof Pawn
@@ -123,6 +149,7 @@ public class Pawn extends Piece {
             pawn.getSquare().setPiece(null, graphic);
         }
 
+        // Check to see if the pawn promotion dialog should be issued to the player.
         if (graphic) {
             if (square.getRow() == 0 || square.getRow() == 7) {
                 Optional<Piece> result = new PromotionDialog(this).showAndWait();

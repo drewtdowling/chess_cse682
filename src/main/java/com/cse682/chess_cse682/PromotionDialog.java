@@ -13,7 +13,7 @@ public class PromotionDialog extends Dialog<Piece> {
     private Piece selectedPiece;
 
     public PromotionDialog(Pawn pawn) {
-        setTitle("Promote pawn " + pawn.getColor().name());
+        setTitle("Promote pawn " + pawn.getColor().prettyName());
         setResultConverter(f -> selectedPiece);
         HBox hbox = new HBox();
         hbox.getChildren().add(new PromotionCandidateLabel(new Queen(pawn.getColor(), null)));
@@ -24,7 +24,6 @@ public class PromotionDialog extends Dialog<Piece> {
     }
 
     private class PromotionCandidateLabel extends Label {
-
         Piece piece;
 
         PromotionCandidateLabel(Piece figure) {
