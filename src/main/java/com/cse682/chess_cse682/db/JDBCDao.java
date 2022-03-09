@@ -24,8 +24,13 @@ public class JDBCDao {
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                this.db.closeConnection(false);
                 return true;
             }
+//            else {
+//                this.db.closeConnection(false);
+//                this.register(username, password);
+//            }
 
         }
 
@@ -35,6 +40,29 @@ public class JDBCDao {
             throw new DataAccessException("DAE in validate");
         }
 
+        this.db.closeConnection(false);
         return false;
+    }
+
+    private void register(String username, String password) throws DataAccessException {
+        Connection conn = this.db.openConnection();
+
+        try {
+            String sql = "INSERT INTO User (Username, Password) VALUES (?,?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setString(1, username);
+            ps.setString(2, password);
+
+            ps.executeUpdate();
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            this.db.closeConnection(false);
+            throw new DataAccessException("Cnannot create account");
+        }
+
+        this.db.closeConnection(true);
     }
 }

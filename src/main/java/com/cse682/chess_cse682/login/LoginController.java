@@ -22,9 +22,11 @@ public class LoginController {
     private PasswordField passwordField;
     @FXML
     private Button submitButton;
+    @FXML
+    private Button registerButton;
 
     @FXML
-    public void login(ActionEvent event) throws SQLException, DataAccessException {
+    public void login(ActionEvent event) throws DataAccessException {
         Window owner = submitButton.getScene().getWindow();
 
         System.out.println(usernameField.getText());
@@ -53,11 +55,18 @@ public class LoginController {
             Stage stage = (Stage)submitButton.getScene().getWindow();
             stage.close();
         }
-
-
     }
 
-    public static void infoBox(String infoMsg, String headerText, String title) {
+    @FXML
+    public void gotoRegister(ActionEvent event) throws DataAccessException {
+        // Close the stage
+        Stage stage = (Stage)submitButton.getScene().getWindow();
+        stage.close();
+
+        // Show the register page TODO
+    }
+
+    private static void infoBox(String infoMsg, String headerText, String title) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText(infoMsg);
         alert.setTitle(title);
