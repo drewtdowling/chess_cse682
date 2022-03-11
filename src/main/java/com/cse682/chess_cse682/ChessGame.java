@@ -5,10 +5,12 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.scene.paint.*;
 
 import java.io.Serializable;
 
@@ -80,12 +82,24 @@ public class ChessGame extends Application implements Serializable {
 
         // Game Menu
         GameMenu menu = new GameMenu(this);
-        pane.getChildren().addAll(menu.getMenuButtons());
+        ButtonBar buttonBar = menu.getMenuButtons();
+        HBox menuBox = new HBox();
+        menuBox.setAlignment(Pos.CENTER);
+        menuBox.setPadding(new Insets(10, 20, 10, 0));
+        menuBox.getChildren().addAll(buttonBar);
+        menuBox.setStyle("-fx-background-color: darkgreen");
+        pane.setTop(menuBox);
 
+        // Game Status
+        HBox statusBox = new HBox();
+        statusBox.setAlignment(Pos.CENTER);
+        statusBox.setStyle("-fx-background-color: darkgreen");
         gameStatus = new Label();
-        gameStatus.setAlignment(Pos.BOTTOM_CENTER);
-        gameStatus.setPadding(new Insets(10, 0, 10, 10));
-        pane.setBottom(gameStatus);
+        gameStatus.setAlignment(Pos.CENTER);
+        gameStatus.setPadding(new Insets(10, 10, 10, 10));
+        gameStatus.setStyle("-fx-background-color: darkgreen; -fx-font: 20px; -fx-text-fill: white");
+        statusBox.getChildren().add(gameStatus);
+        pane.setBottom(statusBox);
 
         initializeGameboard();
 

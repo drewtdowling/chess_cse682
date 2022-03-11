@@ -29,7 +29,8 @@ public class Square extends Label {
      */
     private static final String defaultWhiteStyle = "-fx-background-color: lightgray";
 
-    private static final String highlightedStyle = "-fx-background-color: cyan";
+    private static final String highlightedStyle = "-fx-background-color: rgb(0,177,0);" +
+            "-fx-border-color: rgb(0,50,0);" + "-fx-border-width: 3;" + "-fx-border-insets: 1 1 1 1;";
 
     private static final int dragOffset;
 
