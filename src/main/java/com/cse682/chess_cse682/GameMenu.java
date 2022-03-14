@@ -20,7 +20,7 @@ public class GameMenu extends BorderPane {
      * The Game Menu is static, so we don't have to worry about
      * dynamically adding buttons from an admin page
      * */
-    public GameMenu() {
+    public GameMenu(ChessGame chessGame) {
         this.initButtons();
         this.initBar();
     }
@@ -57,6 +57,7 @@ public class GameMenu extends BorderPane {
             @Override
             public void handle(ActionEvent actionEvent) {
                 System.out.println("New Game Button Pressed");
+                ChessGame.resetGame();
             }
         });
 

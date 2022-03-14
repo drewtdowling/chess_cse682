@@ -5,6 +5,7 @@ import com.cse682.chess_cse682.db.GenerateDB;
 import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,19 +15,33 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.util.Objects;
+import java.io.Serializable;
 
 /**
  * ChessClientApplication is a desktop Chess game application with
  * a GUI that allows users to play, load, and save chess games.
  */
-public class ChessGame extends Application {
+public class ChessGame extends Application implements Serializable {
 
     /**
      * Store a reference to the currently active chess Board.
      */
-    private Board gameboard;
+    private static Board gameboard;
 
-    private int turn;
+    /**
+     * Game status label to show within the window.
+     */
+    private transient Label gameStatus;
+
+    /**
+     * Current turn in the chess game.
+     */
+    private static int turn;
+
+    /**
+     * Singleton instance used to track the current game.
+     */
+    private static ChessGame game;
 
     /**
      * Title of the application window.
@@ -59,6 +74,9 @@ public class ChessGame extends Application {
         // Set the title into the application window.
         stage.setTitle(TITLE);
 
+        // Set the singleton.
+        game = this;
+
         // Initialize the pane used to frame all application contents.
         BorderPane pane = new BorderPane();
 
@@ -77,21 +95,28 @@ public class ChessGame extends Application {
         // Instantiate the chess Board instance and place it into the grid using
         // the required offsets to fit within the row/column labels.
         this.setGameboard(new Board(this));
-        board.add(this.gameboard, 1, 1, 8, 8);
+        board.add(gameboard, 1, 1, 8, 8);
         board.setAlignment(Pos.CENTER);
         pane.setCenter(board);
 
         // Game Menu
-        GameMenu menu = new GameMenu();
+        GameMenu menu = new GameMenu(this);
         pane.getChildren().addAll(menu.getMenuButtons());
+
+        gameStatus = new Label();
+        gameStatus.setAlignment(Pos.BOTTOM_CENTER);
+        gameStatus.setPadding(new Insets(10, 0, 10, 10));
+        pane.setBottom(gameStatus);
 
         initializeGameboard();
 
         this.setTurn(1);
 
+        game.checkGameState();
+
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
-        Scene scene = new Scene(pane, 470, 520);
+        Scene scene = new Scene(pane, 470, 550);
         stage.setMinWidth(stage.getWidth());
         stage.setMinHeight(stage.getHeight());
         stage.setScene(scene);
@@ -103,8 +128,8 @@ public class ChessGame extends Application {
      * Get the currently active chess board.
      * @return Current chess board instance shown in the window.
      */
-    public Board getGameboard() {
-        return this.gameboard;
+    public static Board getGameboard() {
+        return gameboard;
     }
 
     /**
@@ -114,7 +139,7 @@ public class ChessGame extends Application {
     public void setGameboard(Board gameboard) {
         if(gameboard == null)
             throw new NullPointerException("Cannot set a null gameboard in the ChessClientApplication.");
-        this.gameboard = gameboard;
+        ChessGame.gameboard = gameboard;
     }
 
     /**
@@ -126,11 +151,58 @@ public class ChessGame extends Application {
     }
 
     /**
+     * Utility method to advance the turn of the game after a move.
+     */
+    public void advanceTurn() {
+        turn++;
+        gameboard.recalculateAttackedSquares();
+        checkGameState();
+    }
+
+    /**
+     * Utility method to update the text in the game status label shown in the GUI.
+     * @param gameStateText
+     */
+    private void displayGameState(String gameStateText) {
+        this.gameStatus.setText(gameStateText);
+    }
+
+    /**
+     * Check the state of the chess game for checks, checkmates, and stalemates.
+     */
+    public void checkGameState() {
+        King king = gameboard.getKing(nextToMove());
+        if (king != null) {
+            if (king.inCheck()) {
+                if (king.inCheckmate()) {
+                    this.displayGameState("Checkmate!  " + king.getColor().opposite().prettyName() + " wins!");
+                    return;
+                } else {
+                    this.displayGameState("Check! " + king.getColor().prettyName() + " to defend.");
+                    return;
+                }
+            } else if (king.inStalemate()) {
+                this.displayGameState("Stalemate! " + king.getColor().prettyName() + " can't move.");
+                return;
+            }
+        }
+        this.displayGameState(nextToMove().prettyName() + " to move!");
+    }
+
+    /**
      * Get the current turn of the chess game.
      * @return Current turn of the chess game.
      */
     public int currentTurn() {
         return this.turn;
+    }
+
+    /**
+     * Utility method to determine the color of the player next to move.
+     * @return
+     */
+    public Color nextToMove() {
+        return this.turn % 2 == 0 ? Color.BLACK : Color.WHITE;
     }
 
     /**
@@ -162,14 +234,22 @@ public class ChessGame extends Application {
      *
      * TODO: Once we implement the ability to save and load games, we could just load a file for the default instead.
      */
-    private void initializeGameboard() {
+    private static void initializeGameboard() {
         Square square;
 
         // Place the pawns.
         for(int i = 0; i < 8; i++) {
-            square = this.gameboard.getSquare(i, 1);
+            square = gameboard.getSquare(i, 1);
             square.setPiece(new Pawn(Color.BLACK, square));
-            square = this.gameboard.getSquare(i, 6);
+            square = gameboard.getSquare(i, 2);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 3);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 4);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 5);
+            square.setPiece(null);
+            square = gameboard.getSquare(i, 6);
             square.setPiece(new Pawn(Color.WHITE, square));
         }
 
@@ -214,6 +294,18 @@ public class ChessGame extends Application {
         square.setPiece(new King(Color.BLACK, square));
         square = gameboard.getSquare(4, 7);
         square.setPiece(new King(Color.WHITE, square));
+
+        game.checkGameState();
+    }
+
+    /**
+     * Utility method to reset the game board, reset the turn, and reset
+     * the game status label.
+     */
+    public static void resetGame() {
+        initializeGameboard();
+        turn = 1;
+        game.checkGameState();
     }
 
     /**

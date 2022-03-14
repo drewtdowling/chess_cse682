@@ -8,23 +8,47 @@ public enum Color {
     BLACK("black"),
     WHITE("white");
 
-    private String name;
+    /**
+     * Name of the color.
+     */
+    private final String name;
 
+    /**
+     * Parameterized constructor of the Color class.
+     * @param colorStr String representation of the color.
+     */
     Color(String colorStr) {
         this.name = colorStr;
     }
 
+    /**
+     * Utility method to negate a color.
+     * @return Opposite of the invoking color.
+     */
     public Color opposite() {
-        Color toReturn = switch (this) {
+        return switch (this) {
             case BLACK -> WHITE;
             case WHITE -> BLACK;
-            default -> throw new IllegalStateException("Unexpected value: " + this);
         };
-        return toReturn;
     }
 
+    /**
+     * Convert a color to a String.
+     * @return String representation of the color.
+     */
     @Override
     public String toString() {
         return this.name;
+    }
+
+    /**
+     * Utility method to provide a capitalized name of a color.
+     * @return Capitalized name of a color.
+     */
+    public String prettyName() {
+        return switch (this) {
+            case BLACK -> "Black";
+            case WHITE -> "White";
+        };
     }
 }
