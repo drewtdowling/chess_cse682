@@ -44,7 +44,7 @@ public class JDBCDao {
         return false;
     }
 
-    private void register(String username, String password) throws DataAccessException {
+    public void register(String username, String password) throws DataAccessException {
         Connection conn = this.db.openConnection();
 
         try {

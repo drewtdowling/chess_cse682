@@ -29,10 +29,10 @@
             <Insets top="20" right="0" bottom="20" left="0"></Insets>
         </GridPane.margin>
     </Label>
-    <!-- Add Email Label -->
+    <!-- Add Username Label -->
     <Label text="Username : " GridPane.columnIndex="0"
            GridPane.rowIndex="2" ></Label>
-    <!-- Add Email Text Field -->
+    <!-- Add username Text Field -->
     <TextField fx:id="usernameField" prefHeight="40"
                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <!-- Add Password Label -->
@@ -47,20 +47,9 @@
             GridPane.columnIndex="0" GridPane.rowIndex="4"
             GridPane.columnSpan="2" GridPane.rowSpan="1"
             GridPane.halignment="CENTER"
-            onAction="#">
+            onAction="#register">
         <GridPane.margin>
             <Insets top="20" right="0" bottom="20" left="0"></Insets>
         </GridPane.margin>
-    </Button>
-    <Button fx:id="registerButton" text="Register"
-            prefWidth="100" prefHeight="40" defaultButton="false"
-            GridPane.columnIndex="0" GridPane.rowIndex="5"
-            GridPane.columnSpan="2" GridPane.rowSpan="1"
-            GridPane.halignment="RIGHT"
-            onAction="#">
-        <GridPane.margin>
-            <Insets top="20" right="0" bottom="20" left="0"></Insets>
-        </GridPane.margin>
-
     </Button>
 </GridPane>

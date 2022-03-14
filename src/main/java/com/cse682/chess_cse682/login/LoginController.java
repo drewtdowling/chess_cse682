@@ -4,6 +4,9 @@ import com.cse682.chess_cse682.db.DataAccessException;
 import com.cse682.chess_cse682.db.JDBCDao;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -11,10 +14,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.Window;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 
-public class LoginController {
+public class LoginController extends Controller {
 
     @FXML
     private TextField usernameField;
@@ -29,8 +34,8 @@ public class LoginController {
     public void login(ActionEvent event) throws DataAccessException {
         Window owner = submitButton.getScene().getWindow();
 
-        System.out.println(usernameField.getText());
-        System.out.println(passwordField.getText());
+//        System.out.println(usernameField.getText());
+//        System.out.println(passwordField.getText());
 
         if (usernameField.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form error", "Please enter username");
@@ -38,6 +43,7 @@ public class LoginController {
         }
         if (passwordField.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, owner, "Form error", "Please enter a password");
+            return;
         }
 
         String uname = usernameField.getText();
@@ -58,30 +64,17 @@ public class LoginController {
     }
 
     @FXML
-    public void gotoRegister(ActionEvent event) throws DataAccessException {
-        // Close the stage
-        Stage stage = (Stage)submitButton.getScene().getWindow();
-        stage.close();
+    public void gotoRegister(ActionEvent event) throws IOException {
 
-        // Show the register page TODO
+        // Show the register page
+        Stage regStage = new Stage();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/registerForm.fxml")));
+        Scene reg = new Scene(root);
+        regStage.setScene(reg);
+        regStage.show();
     }
 
-    private static void infoBox(String infoMsg, String headerText, String title) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText(infoMsg);
-        alert.setTitle(title);
-        alert.setHeaderText(headerText);
-        alert.showAndWait();
-    }
 
-    private static void showAlert(Alert.AlertType alertType, Window owner, String title, String msg) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(msg);
-        alert.initOwner(owner);
-        alert.show();
-    }
 
 
 }
