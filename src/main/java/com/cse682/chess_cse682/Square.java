@@ -14,9 +14,24 @@ import java.util.List;
  */
 public class Square extends Label {
 
-    // TODO: Implement a Piece class along with sub-classes for the various chess pieces.
+    /**
+     * Piece currently placed on the square.
+     */
     private Piece piece;
-    private int row, column;
+
+    /**
+     * Row value, [0,7] top-to-bottom, of the Square's position on the board.
+     */
+    private int row;
+
+    /**
+     * Column value, [0,7] left-to-right, of the Square's position on the board.
+     */
+    private int column;
+
+    /**
+     * Reference to the {@link Board} in which the Square is placed.
+     */
     private Board board;
 
     /**
@@ -29,10 +44,19 @@ public class Square extends Label {
      */
     private static final String defaultWhiteStyle = "-fx-background-color: lightgray";
 
+    /**
+     * Light blue color used for highlighted squares on the board.
+     */
     private static final String highlightedStyle = "-fx-background-color: cyan";
 
+    /**
+     * Mouse drag offset used in the piece movement UI.
+     */
     private static final int dragOffset;
 
+    /*
+      Static initializer for the dragOffset value for squares.
+     */
     static {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("windows")) {
@@ -81,14 +105,26 @@ public class Square extends Label {
         return this.board;
     }
 
+    /**
+     * Setter method for the {@link Piece} placed on the square.
+     * @param piece Piece placed on the square, or null if no piece.
+     */
     public void setPiece(Piece piece) {
         this.piece = piece;
+
+        // Update the graphic shown in the GUI.
         if(piece == null)
             setGraphic(null);
         else
             setGraphic(new ImageView(Piece.pieceIconCache.get(piece.getResourceFileName())));
     }
 
+    /**
+     * Setter method for the {@link Piece} currently on the Square.
+     * @param piece Piece on the square, or null if no piece.
+     * @param graphic Boolean flag indicating if the change should be visually
+     *                represented on the {@link Board}.
+     */
     public void setPiece(Piece piece, boolean graphic) {
         this.piece = piece;
         if (graphic) {
@@ -100,6 +136,10 @@ public class Square extends Label {
         }
     }
 
+    /**
+     * Getter method for the piece currently placed on the square.
+     * @return {@link Piece} currently on the square, or null if no piece.
+     */
     public Piece getPiece() {
         return this.piece;
     }
@@ -141,6 +181,22 @@ public class Square extends Label {
     }
 
     /**
+     * Utility method to determine if the square is attacked using the en-passant rule.
+     * @param movingPiece Piece currently being moved.
+     * @return True if the square is an en-passant field; false otherwise.
+     */
+    private boolean isEnPassantField(Piece movingPiece) {
+        Piece piece;
+        return movingPiece instanceof Pawn && ((this.row == 2
+                && (piece = board.getSquare(this.column, 3).getPiece()) instanceof Pawn
+                && board.getGame().currentTurn() - piece.getFirstTurnMoved() == 1)
+                ||
+                (this.row == 5
+                        && (piece = board.getSquare(this.column, 4).getPiece()) instanceof Pawn
+                        && board.getGame().currentTurn() - piece.getFirstTurnMoved() == 1));
+    }
+
+    /**
      * Determines the color of the square from its position in the {@link Board}.
      * @return {@link Color} enumeration indicating the color of the {@link Square}.
      */
@@ -162,15 +218,20 @@ public class Square extends Label {
         String style = switch (this.getColor()) {
             case BLACK -> defaultBlackStyle;
             case WHITE -> defaultWhiteStyle;
-            default -> throw new RuntimeException("Invalid color encountered.");
         };
         this.setStyle(style);
     }
 
+    /**
+     * Update the style of the square to the highlighted color.
+     */
     private void setHighlightedStyle() {
         this.setStyle(highlightedStyle);
     }
 
+    /**
+     * Handler method for mouse-over events.
+     */
     private void onMouseEntered() {
         List<Square> availableSquares;
         if (this.piece != null && (availableSquares = piece.computeAvailableSquares(true)).size() > 0) {
@@ -180,6 +241,9 @@ public class Square extends Label {
         }
     }
 
+    /**
+     * Handler method for mouse-exit events.
+     */
     private void onMouseExited() {
         List<Square> availableSquares;
         if (this.piece != null && (availableSquares = piece.computeAvailableSquares(true)).size() > 0) {
@@ -189,17 +253,10 @@ public class Square extends Label {
         }
     }
 
-    private boolean isEnPassantField(Piece movingPiece) {
-        Piece piece;
-        return movingPiece instanceof Pawn && ((this.row == 2
-                                               && (piece = board.getSquare(this.column, 3).getPiece()) instanceof Pawn
-                                               && board.getGame().currentTurn() - piece.getFirstTurnMoved() == 1)
-                                              ||
-                                              (this.row == 5
-                                               && (piece = board.getSquare(this.column, 4).getPiece()) instanceof Pawn
-                                               && board.getGame().currentTurn() - piece.getFirstTurnMoved() == 1));
-    }
-
+    /**
+     * Handler method to initiate when the user begins to drag a piece on the board.
+     * @param e MouseEvent representing the information about the drag to be handled.
+     */
     private void onDragDetected(MouseEvent e) {
         List<Square> squares;
         if (piece != null && piece.canMove() && (squares = piece.getAllAvailableSquares()).size() > 0) {
@@ -221,6 +278,10 @@ public class Square extends Label {
         }
     }
 
+    /**
+     * Handler method to process when the user drags over a square on the board.
+     * @param e DragEvent containing information about the drag.
+     */
     private void onDragOver(DragEvent e) {
         if (e.getDragboard().hasContent(Piece.CHESS_PIECE)) {
             e.acceptTransferModes(TransferMode.MOVE);
@@ -228,6 +289,10 @@ public class Square extends Label {
         e.consume();
     }
 
+    /**
+     * Handler method to post-process drag events.
+     * @param e DragEvent containing information about the drag release event.
+     */
     private void onDragDone(DragEvent e) {
         Dragboard dragboard = e.getDragboard();
         if (dragboard.hasContent(Piece.CHESS_PIECE)) {
@@ -237,6 +302,10 @@ public class Square extends Label {
         e.consume();
     }
 
+    /**
+     * Handler method to process when the user releases a drag on a square.
+     * @param e MouseEvent containing information about the drag release event.
+     */
     private void onDragDropped(DragEvent e) {
         Dragboard dragboard = e.getDragboard();
         if (dragboard.hasContent(Piece.CHESS_PIECE)) {
@@ -252,6 +321,11 @@ public class Square extends Label {
         e.consume();
     }
 
+    /**
+     * Utility method to deserialize a Piece encoded during drag events.
+     * @param dragboard Dragboard within which the piece is encoded.
+     * @return Deserialized piece that was dragged.
+     */
     private Piece deserializePiece(Dragboard dragboard) {
         Piece source = (Piece)dragboard.getContent(Piece.CHESS_PIECE);
         source.setSquare(ChessGame.getGameboard().getSquare(source.getColumn(), source.getRow()));
