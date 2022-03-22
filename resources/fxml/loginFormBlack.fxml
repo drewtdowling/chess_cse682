@@ -19,7 +19,7 @@
                            maxWidth="Infinity" hgrow="ALWAYS"></ColumnConstraints>
     </columnConstraints>
     <!-- Add Header Label -->
-    <Label text="White Pieces Login" GridPane.columnIndex="0"
+    <Label text="Black Pieces Login" GridPane.columnIndex="0"
            GridPane.rowIndex="0" GridPane.columnSpan="2"
            GridPane.rowSpan="1" GridPane.halignment="CENTER" >
         <font>

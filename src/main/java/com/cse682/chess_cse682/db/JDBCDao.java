@@ -1,5 +1,8 @@
 package com.cse682.chess_cse682.db;
 
+import com.cse682.chess_cse682.orm.Statistic;
+import com.cse682.chess_cse682.orm.User;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +32,7 @@ public class JDBCDao {
             }
 //            else {
 //                this.db.closeConnection(false);
-//                this.register(username, password);
+//                //this.register(username, password);
 //            }
 
         }
@@ -60,9 +63,22 @@ public class JDBCDao {
         catch (SQLException e) {
             e.printStackTrace();
             this.db.closeConnection(false);
-            throw new DataAccessException("Cnannot create account");
+            throw new DataAccessException("Cannot create account");
         }
 
         this.db.closeConnection(true);
+    }
+
+    public Statistic getUserStats(User user) throws DataAccessException {
+        Connection conn = this.db.openConnection();
+
+        try {
+            // TODO
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            this.db.closeConnection(false);
+            throw new DataAccessException("Cannot get Stats");
+        }
     }
 }
