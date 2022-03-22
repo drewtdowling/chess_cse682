@@ -80,5 +80,7 @@ public class JDBCDao {
             this.db.closeConnection(false);
             throw new DataAccessException("Cannot get Stats");
         }
+
+        return null;
     }
 }
