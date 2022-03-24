@@ -326,7 +326,9 @@ public abstract class Piece implements Serializable {
         int preY = this.row;
         this.row = square.getRow();
         this.col = square.getColumn();
-
+        if(graphic) {
+            ChessGame.addMoveHistory(new ChessGame.Move(this, preY, preX, this.row, this.col, killed));
+        }
         // move the piece.
         this.setSquare(square);
 
