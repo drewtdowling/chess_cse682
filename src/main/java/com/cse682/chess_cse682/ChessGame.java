@@ -2,6 +2,8 @@ package com.cse682.chess_cse682;
 
 import com.cse682.chess_cse682.db.DataAccessException;
 import com.cse682.chess_cse682.db.GenerateDB;
+import com.cse682.chess_cse682.orm.DataStage;
+import com.cse682.chess_cse682.orm.User;
 import com.cse682.chess_cse682.piece.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -69,12 +71,21 @@ public class ChessGame extends Application implements Serializable {
         }
 
         // Show the login stage
-        // Login page
-        Stage loginStg = new Stage();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/loginForm.fxml")));
-        Scene login = new Scene(root);
-        loginStg.setScene(login);
-        loginStg.showAndWait();
+        // Login page for White player
+        DataStage whitePlayerLogin = new DataStage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loginForm.fxml"));
+        Parent root = loader.load();
+        Scene whiteLoginScene = new Scene(root);
+        whitePlayerLogin.setScene(whiteLoginScene);
+        User whitePlayer = whitePlayerLogin.showAndReturn(loader.getController());
+
+        // Login page for Black player
+        DataStage blackPlayerLogin = new DataStage();
+        FXMLLoader blackLoader = new FXMLLoader(getClass().getResource("/fxml/loginFormBlack.fxml"));
+        Parent blackRoot = blackLoader.load();
+        Scene blackLoginScene = new Scene(blackRoot);
+        blackPlayerLogin.setScene(blackLoginScene);
+        User blackPlayer = blackPlayerLogin.showAndReturn(blackLoader.getController());
 
         // Set the title into the application window.
         stage.setTitle(TITLE);
@@ -136,6 +147,7 @@ public class ChessGame extends Application implements Serializable {
 
         // Wrap the created Pane into a Scene of a specified size and then display
         // the Scene using the application's Stage.
+
         Scene scene = new Scene(pane, 600, 550);
         stage.setMinWidth(stage.getWidth());
         stage.setMinHeight(stage.getHeight());
@@ -465,5 +477,16 @@ public class ChessGame extends Application implements Serializable {
         GenerateDB gdb = new GenerateDB();
         gdb.clearUserTable();
         gdb.clearStatsTable();
+    }
+
+    /**
+     * This function displays the black and white user in the lower right hand
+     * portion of the screen
+     * */
+    private Label labelUsers(User whiteUser, User blackUser) {
+        Label users = new Label();
+        users.setPadding(new Insets(10, 0, 10, 10));
+        users.setText("White: " + whiteUser.getUsername() + "\n\r" + "Black: " + blackUser.getUsername());
+        return users;
     }
 }
