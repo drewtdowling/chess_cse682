@@ -27,27 +27,21 @@ public class GameMenu extends BorderPane {
 
     private void initButtons() {
         this.newGame = new Button("New Game");
-        this.newGame.setPrefSize(60, 40);
         this.undo = new Button("Undo");
-        this.undo.setPrefSize(60, 40);
         this.importGame = new Button("Import");
-        this.importGame.setPrefSize(60, 40);
         this.exportGame = new Button("Export");
-        this.exportGame.setPrefSize(60, 40);
         this.resign = new Button("Resign");
-        this.resign.setPrefSize(60, 40);
     }
 
     private void initBar() {
         this.menuButtonBar = new ButtonBar();
+        this.menuButtonBar.setButtonMinWidth(100);
         ButtonBar.setButtonData(this.newGame, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.undo, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.importGame, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.exportGame, ButtonBar.ButtonData.APPLY);
         ButtonBar.setButtonData(this.resign, ButtonBar.ButtonData.APPLY);
         this.menuButtonBar.getButtons().addAll(this.newGame, this.undo, this.importGame, this.exportGame, this.resign);
-        this.menuButtonBar.setLayoutX(220); //TODO - change these to be dynamic if we have time
-        this.menuButtonBar.setLayoutY(25);
     }
 
     // TODO - whenever functionality gets added to the game, update the event handlers
@@ -64,7 +58,9 @@ public class GameMenu extends BorderPane {
         this.undo.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+
                 System.out.println("Undo Button Pressed");
+                ChessGame.undoMoveHandler();
             }
         });
 
@@ -78,7 +74,9 @@ public class GameMenu extends BorderPane {
         this.exportGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
+
                 System.out.println("Export Button Pressed");
+                ChessGame.exportHandler();
             }
         });
 
@@ -86,6 +84,7 @@ public class GameMenu extends BorderPane {
             @Override
             public void handle(ActionEvent actionEvent) {
                 System.out.println("Resign Button Pressed");
+                ChessGame.resignHandler();
             }
         });
     }
